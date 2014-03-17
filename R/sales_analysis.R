@@ -8,8 +8,8 @@ library(lubridate)
 # Correct column headers
 correct_cols <- c("Catalogue No.","Lot Number","Artist Name 1","Artist Name 2","Artist Name 3","Artist Name 4","Artist Name 5","Title","Annotations","Object Type","Object Notes","Inscription","Seller","Transaction","Buyer","Lot Notes","Previous Owner","Previous Sales","Post Owner","Post Sales","Sale Date","Expert","Commissaire Pr.","Auction House","Sale Location","Lugt Number")
 
-base_dutch_paintings <- read.csv(
-  "../data/dutch_paintings.csv",
+base_sales <- read.csv(
+  "../data/sales.csv",
   skip=1,
   header=FALSE,
   col.names=correct_cols,
@@ -17,16 +17,16 @@ base_dutch_paintings <- read.csv(
   stringsAsFactors=FALSE
 )
 
-dutch_paintings <- base_dutch_paintings
+sales <- base_sales
 
 #### Generate date columns ####
 date_pattern <- "^(.{11})"
-dutch_paintings$Date <- ymd(str_extract(dutch_paintings$Sale.Date, date_pattern))
-dutch_paintings$Year <- as.integer(year(dutch_paintings$Date))
-dutch_paintings$Month <- as.factor(month(dutch_paintings$Date))
+sales$Date <- ymd(str_extract(sales$Sale.Date, date_pattern))
+sales$Year <- as.integer(year(sales$Date))
+sales$Month <- as.factor(month(sales$Date))
 
 #### Plot all by year and month ####
-by_year <- dutch_paintings %.% group_by(Year) %.% summarize(count=n())
+by_year <- sales %.% group_by(Year) %.% summarize(count=n())
 sales_by_year <- ggplot(by_year, aes(x=Year, y=count)) + 
   geom_point() +
   ggtitle("Number of Sales per Year")
@@ -34,7 +34,7 @@ svg("../plots/sales_by_year.svg", width=11, height=8.5)
 sales_by_year
 dev.off()
 
-sales_by_month <- ggplot(dutch_paintings, aes(x=Month)) + 
+sales_by_month <- ggplot(sales, aes(x=Month)) + 
   geom_bar(stat="bin") +
   ggtitle("Number of Sales per Month")
 svg("../plots/sales_by_month.svg", width=11, height=8.5)
@@ -48,11 +48,11 @@ while(period<1840) {
   end <- period + 10
   per_name <- paste(start,"-",end)
   print(per_name)
-  dutch_paintings$Period[dutch_paintings$Year>=start & dutch_paintings$Year<end] <- per_name
+  sales$Period[sales$Year>=start & sales$Year<end] <- per_name
   period <- end
 }
 
-faceted_months <- ggplot(dutch_paintings, aes(x=Month)) + 
+faceted_months <- ggplot(sales, aes(x=Month)) + 
   geom_bar(stat="bin") + 
   facet_wrap(~ Period) +
   ggtitle("Sales per Month, By Decade")
