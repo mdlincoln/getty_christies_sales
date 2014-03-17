@@ -25,8 +25,19 @@ dutch_paintings$Date <- ymd(str_extract(dutch_paintings$Sale.Date, date_pattern)
 dutch_paintings$Year <- as.integer(year(dutch_paintings$Date))
 dutch_paintings$Month <- as.factor(month(dutch_paintings$Date))
 
-# Periods
+#### Plot all by year and month ####
+by_year <- dutch_paintings %.% group_by(Year) %.% summarize(count=n())
+sales_by_year <- ggplot(by_year, aes(x=Year, y=count)) + 
+  geom_point() +
+  ggtitle("Number of Sales per Year")
+sales_by_year
 
+sales_by_month <- ggplot(dutch_paintings, aes(x=Month)) + 
+  geom_bar(stat="bin") +
+  ggtitle("Number of Sales per Month")
+sales_by_month
+
+#### Generate period facets ####
 period <- 1770
 while(period<1840) {
   start <- period
@@ -37,12 +48,10 @@ while(period<1840) {
   period <- end
 }
 
-dutch_paintings$Period <- as.factor(dutch_paintings$Period)
-ggplot(dutch_paintings, aes(x=Month)) + geom_bar(stat="bin") + facet_wrap(~ Period)
+faceted_months <- ggplot(dutch_paintings, aes(x=Month)) + 
+  geom_bar(stat="bin") + 
+  facet_wrap(~ Period) +
+  ggtitle("Sales per Month, By Decade")
+faceted_months
 
-#### Group and plot by year and month ####
-by_year <- dutch_paintings %.% group_by(Year) %.% summarize(count=n())
-ggplot(by_year, aes(x=Year, y=count)) + geom_point()
 
-by_month <- dutch_paintings %.% group_by(Month) %.% summarize(count=n())
-ggplot(by_month, aes(x=Month, y=count)) + geom_bar(stat="identity")
