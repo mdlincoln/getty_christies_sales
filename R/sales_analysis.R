@@ -31,14 +31,15 @@ sales$Month <- as.factor(month(sales$Date))
 by_year <- sales %.% group_by(Year) %.% summarize(count=n())
 sales_by_year <- ggplot(by_year, aes(x=Year, y=count)) + 
   geom_point() +
-  ggtitle("Number of Sales per Year")
+  geom_smooth() +
+  ggtitle("Christie's Sales per Year")
 svg("../plots/sales_by_year.svg", width=11, height=8.5)
 sales_by_year
 dev.off()
 
 sales_by_month <- ggplot(sales, aes(x=Month)) + 
   geom_bar(stat="bin") +
-  ggtitle("Number of Sales per Month")
+  ggtitle("Christie's Sales by Month")
 svg("../plots/sales_by_month.svg", width=11, height=8.5)
 sales_by_month
 dev.off()
@@ -57,7 +58,7 @@ while(period<1840) {
 faceted_months <- ggplot(sales, aes(x=Month)) + 
   geom_bar(stat="bin") + 
   facet_wrap(~ Period) +
-  ggtitle("Sales per Month, By Decade")
+  ggtitle("Christie's Sales by Month, Faceted By Decade")
 svg("../plots/faceted_sales_by_month.svg", width=11, height=8.5)
 faceted_months
 dev.off()
