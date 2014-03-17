@@ -1,6 +1,7 @@
 library(dplyr)
 library(stringr)
 library(ggplot2)
+library(lubridate)
 
 #### Load data tables ####
 
@@ -17,11 +18,14 @@ dutch_paintings <- read.csv(
 )
 
 #### Generate year column ####
-date_pattern <- "^([[:digit:]]{4})"
-dutch_paintings$Year <- str_extract(dutch_paintings$Sale.Date, date_pattern)
-dutch_paintings$Year <- as.integer(dutch_paintings$Year)
+date_pattern <- "^(.{11})"
+dutch_paintings$Date <- ymd(str_extract(dutch_paintings$Sale.Date, date_pattern))
+dutch_paintings$Year <- as.integer(year(dutch_paintings$Date))
+dutch_paintings$Month <- as.factor(month(dutch_paintings$Date))
 
-by_year <- group_by(dutch_paintings, Year)
-per_year <- summarize(by_year, count=n())
+#### Group and plot by year and month ####
+by_year <- dutch_paintings %.% group_by(Year) %.% summarize(count=n())
+ggplot(by_year, aes(x=Year, y=count)) + geom_point()
 
-qplot(per_year$Year, per_year$count)
+by_month <- dutch_paintings %.% group_by(Month) %.% summarize(count=n())
+ggplot(by_month, aes(x=Month, y=count)) + geom_bar(stat="identity")
