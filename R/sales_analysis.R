@@ -30,12 +30,16 @@ by_year <- dutch_paintings %.% group_by(Year) %.% summarize(count=n())
 sales_by_year <- ggplot(by_year, aes(x=Year, y=count)) + 
   geom_point() +
   ggtitle("Number of Sales per Year")
+svg("../plots/sales_by_year.svg", width=11, height=8.5)
 sales_by_year
+dev.off()
 
 sales_by_month <- ggplot(dutch_paintings, aes(x=Month)) + 
   geom_bar(stat="bin") +
   ggtitle("Number of Sales per Month")
+svg("../plots/sales_by_month.svg", width=11, height=8.5)
 sales_by_month
+dev.off()
 
 #### Generate period facets ####
 period <- 1770
@@ -52,6 +56,6 @@ faceted_months <- ggplot(dutch_paintings, aes(x=Month)) +
   geom_bar(stat="bin") + 
   facet_wrap(~ Period) +
   ggtitle("Sales per Month, By Decade")
+svg("../plots/faceted_sales_by_month.svg", width=11, height=8.5)
 faceted_months
-
-
+dev.off()
