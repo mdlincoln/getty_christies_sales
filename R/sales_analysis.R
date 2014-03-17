@@ -8,6 +8,7 @@ library(lubridate)
 # Correct column headers
 correct_cols <- c("Catalogue No.","Lot Number","Artist Name 1","Artist Name 2","Artist Name 3","Artist Name 4","Artist Name 5","Title","Annotations","Object Type","Object Notes","Inscription","Seller","Transaction","Buyer","Lot Notes","Previous Owner","Previous Sales","Post Owner","Post Sales","Sale Date","Expert","Commissaire Pr.","Auction House","Sale Location","Lugt Number")
 
+# Read in CSV, fixing encoding and using corrected column headers
 base_sales <- read.csv(
   "../data/sales.csv",
   skip=1,
@@ -17,6 +18,7 @@ base_sales <- read.csv(
   stringsAsFactors=FALSE
 )
 
+# Create working data frame
 sales <- base_sales
 
 #### Generate date columns ####
