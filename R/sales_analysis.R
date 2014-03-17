@@ -55,7 +55,7 @@ while(period<1840) {
   period <- end
 }
 
-faceted_months <- ggplot(sales, aes(x=Month)) + 
+faceted_months <- ggplot(filter(sales, Period!="NA"), aes(x=Month)) + 
   geom_bar(stat="bin") + 
   facet_wrap(~ Period) +
   ggtitle("Christie's Sales by Month, Faceted By Decade")
