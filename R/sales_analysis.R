@@ -15,7 +15,7 @@ base_sales <- read.csv(
   header=FALSE,
   col.names=correct_cols,
   encoding="UTF-8",
-  stringsAsFactors=FALSE
+  stringsAsFactors=TRUE
 )
 
 # Create working data frame
@@ -62,3 +62,5 @@ faceted_months <- ggplot(filter(sales, Period!="NA"), aes(x=Month)) +
 svg("../plots/faceted_sales_by_month.svg", width=11, height=8.5)
 faceted_months
 dev.off()
+
+write.csv(summary(sales, maxsum=1000), "../data/sales_summary.csv")
